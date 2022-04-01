@@ -37,7 +37,7 @@ class TransactionModal(BaseModal):
                 ephemeral=True)
         except asyncpg.exceptions.UniqueViolationError:
             results = await interaction.client.pool.fetchval(
-                "SELECT * FROM subscribe WHERE transaction=$1")
+                "SELECT * FROM subscribe WHERE transaction=$1", cleaned_transaction_id)
             if int(results["user_id"]) != interaction.user.id:
                 await interaction.response.send_message("Un abonement a deja été enregistré avec ce numéro de "
                                                         "transaction, votre demande a donc été annulé.", ephemeral=True)
