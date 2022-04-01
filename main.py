@@ -216,6 +216,7 @@ if __name__ == "__main__":
     async def main():
         bot = AkbBot()
         async with bot:
+            print("test1")
             await bot.before_ready_once()
             await bot.load_cogs()
             await bot.start(TOKEN)
