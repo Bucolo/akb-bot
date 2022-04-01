@@ -51,6 +51,8 @@ class AkbBot(commands.Bot):
         )
         self.help_command = None
         self.server_invite = 'https://discord.gg/vEPEYTztgT'
+        self.server_object = None
+        self.server_premium_role = None
         self.owner_ids = OWNER_IDS
         self.colour = self.color = discord.Colour(value=0xA37FFF)
         self.default_checks = {self.check_blacklisted}
@@ -75,6 +77,8 @@ class AkbBot(commands.Bot):
 
     async def on_ready_once(self):
         await self.wait_until_ready()
+        self.server_object = self.get_guild(957989755184881764)
+        self.server_premium_role = self.server_object.get_role(957993239816839208)
         self.invite = discord.utils.oauth_url(self.user.id,
                                               permissions=discord.Permissions(173211516614),
                                               redirect_uri=self.server_invite,
