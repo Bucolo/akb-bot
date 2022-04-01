@@ -2,6 +2,9 @@ import discord
 import asyncpg
 import datetime
 
+NOT_APPROVED = "Votre numéro de transaction n'a pas encore été ajouté dans la base de donnée, votre inscription est " \
+               "donc pour l'instant en attente. je vous contacterai quand elle aura eté validé. "
+
 
 class BaseModal(discord.ui.Modal):
     async def on_error(self, error: Exception, interaction) -> None:
@@ -31,10 +34,8 @@ class TransactionModal(BaseModal):
             await interaction.client.pool.execute(
                 "INSERT INTO subscribe (transaction,user_id,approved,registered_at) VALUES($1,$2,$3,$4)",
                 cleaned_transaction_id, interaction.user.id, False, datetime.datetime.utcnow())
-            return await interaction.response.send_message(
-                "Votre numéro de transaction n'a pas encore été ajouté dans la base de donnée, votre inscription est "
-                "donc pour l'instant en attente. je vous contacterai quand elle aura eté validé.",
-                ephemeral=True)
+            return await interaction.response.send_message(NOT_APPROVED,
+                                                           ephemeral=True)
         except asyncpg.exceptions.UniqueViolationError:
             results = await interaction.client.pool.fetchrow(
                 "SELECT * FROM subscribe WHERE transaction=$1", cleaned_transaction_id)
@@ -42,6 +43,8 @@ class TransactionModal(BaseModal):
                 await interaction.response.send_message("Un abonement a deja été enregistré avec ce numéro de "
                                                         "transaction, votre demande a donc été annulé.", ephemeral=True)
             else:
+                if not results["approved"] or results["expire_at"] is None:
+                    return await interaction.response.send_message(NOT_APPROVED, ephemeral=True)
                 if results["claimed_at"] is None:
                     claimed_at = datetime.datetime.utcnow()
                     new_expire_at = claimed_at + (results['expire_at'] - results['registered_at'])
