@@ -76,8 +76,10 @@ class AkbBot(commands.Bot):
         self.session = aiohttp.ClientSession(connector=connector)
 
     async def on_ready_once(self):
+        print("before waiting")
+        await self.wait_until_ready()
         print("ready")
-        self.server_object = await self.fetch_guild(957989755184881764)
+        self.server_object = self.get_guild(957989755184881764)
         self.server_premium_role = self.server_object.get_role(957993239816839208)
         self.invite = discord.utils.oauth_url(self.user.id,
                                               permissions=discord.Permissions(173211516614),
@@ -217,6 +219,7 @@ if __name__ == "__main__":
             await bot.before_ready_once()
             await bot.load_cogs()
             await bot.start(TOKEN)
+            print("test")
             await bot.on_ready_once()
 
     asyncio.run(main())
