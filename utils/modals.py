@@ -36,7 +36,7 @@ class TransactionModal(BaseModal):
                 "donc pour l'instant en attente. je vous contacterai quand elle aura eté validé.",
                 ephemeral=True)
         except asyncpg.exceptions.UniqueViolationError:
-            results = await interaction.client.pool.fetchval(
+            results = await interaction.client.pool.fetchrow(
                 "SELECT * FROM subscribe WHERE transaction=$1", cleaned_transaction_id)
             if int(results["user_id"]) != interaction.user.id:
                 await interaction.response.send_message("Un abonement a deja été enregistré avec ce numéro de "
