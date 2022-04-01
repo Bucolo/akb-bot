@@ -76,7 +76,6 @@ class AkbBot(commands.Bot):
         self.session = aiohttp.ClientSession(connector=connector)
 
     async def on_ready_once(self):
-        await self.wait_until_ready()
         print("ready")
         self.server_object = await self.fetch_guild(957989755184881764)
         self.server_premium_role = self.server_object.get_role(957993239816839208)
