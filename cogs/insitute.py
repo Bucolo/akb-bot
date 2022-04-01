@@ -13,4 +13,4 @@ class Institute(commands.Cog):
 
     @app_commands.command(name="subscribe")
     async def subscribe_(self, interaction):
-        await interaction.response.send_modal(TransactionModal)
+        await interaction.response.send_modal(TransactionModal())
