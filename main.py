@@ -70,15 +70,14 @@ class AkbBot(commands.Bot):
         return await self.pool.fetchval("SELECT reason FROM registered_user WHERE id=$1 AND is_blacklisted", user.id)
 
     async def before_ready_once(self) -> None:
+        await self.on_ready_once()
         self.pool = await self.establish_database_connection()
         ssl_context = ssl.create_default_context(cafile=certifi.where())
         connector = aiohttp.TCPConnector(ssl=ssl_context)
         self.session = aiohttp.ClientSession(connector=connector)
 
     async def on_ready_once(self):
-        print("before waiting")
         await self.wait_until_ready()
-        print("ready")
         self.server_object = self.get_guild(957989755184881764)
         self.server_premium_role = self.server_object.get_role(957993239816839208)
         self.invite = discord.utils.oauth_url(self.user.id,
@@ -217,11 +216,7 @@ if __name__ == "__main__":
         bot = AkbBot()
         async with bot:
             await bot.before_ready_once()
-            print("to")
             await bot.load_cogs()
-            print("ta")
             await bot.start(TOKEN)
-            print("test")
-            await bot.on_ready_once()
 
     asyncio.run(main())
