@@ -24,7 +24,7 @@ class TransactionModal(BaseModal):
         if not discord.utils.get(interaction.client.server_object.members, id=interaction.user.id):
             return await interaction.response.send_message(
                 f"Vous n'êtes pas dans le serveur, merci de rejoindre {self.server_invite} avant de vous inscrire.")
-        await interaction.client.pool(
+        await interaction.client.pool.execute(
             "INSERT INTO Registered_user(id,name) VALUES($1,$2) ON CONFLICT(id) DO UPDATE SET name=$2",
             interaction.user.id, str(interaction.user.name))
         try:
