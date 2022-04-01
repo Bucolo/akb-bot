@@ -70,7 +70,7 @@ class AkbBot(commands.Bot):
         return await self.pool.fetchval("SELECT reason FROM registered_user WHERE id=$1 AND is_blacklisted", user.id)
 
     async def before_ready_once(self) -> None:
-        await self.on_ready_once()
+        self.loop.create_task(self.on_ready_once())
         self.pool = await self.establish_database_connection()
         ssl_context = ssl.create_default_context(cafile=certifi.where())
         connector = aiohttp.TCPConnector(ssl=ssl_context)
