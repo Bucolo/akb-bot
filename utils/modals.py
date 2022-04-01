@@ -5,7 +5,7 @@ import datetime
 
 class BaseModal(discord.ui.Modal):
     async def on_error(self, error: Exception, interaction) -> None:
-        await interaction.client.tree.on_error(error, None, interaction)
+        await interaction.client.tree.on_error(interaction, interaction.command, error)
 
 
 class TransactionModal(BaseModal):
