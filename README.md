@@ -1,1 +1,1 @@
-# akb
+# akb-bot
