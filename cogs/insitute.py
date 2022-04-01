@@ -2,8 +2,9 @@ from discord.ext import commands
 from discord import app_commands
 from utils.modals import TransactionModal
 
+
 async def setup(bot):
-    await bot.load_cog(Institute)
+    await bot.add_cog(Institute(bot))
 
 
 class Institute(commands.Cog):
