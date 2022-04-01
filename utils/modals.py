@@ -24,6 +24,9 @@ class TransactionModal(BaseModal):
         if not discord.utils.get(interaction.client.server_object.members, id=interaction.user.id):
             return await interaction.response.send_message(
                 f"Vous n'êtes pas dans le serveur, merci de rejoindre {self.server_invite} avant de vous inscrire.")
+        await interaction.client.pool(
+            "INSERT INTO Registered_user(id,name) VALUES($1,$2) ON CONFLICT(id) DO UPDATE SET name=$2",
+            interaction.user.id, str(interaction.user.name))
         try:
             await interaction.client.pool.execute(
                 "INSERT INTO subscribe (transaction,user_id,approved,registered_at) VALUES($1,$2,$3,$4)",
@@ -48,7 +51,7 @@ class TransactionModal(BaseModal):
                     new_expire_at = results["expire_at"]
                 await interaction.client.server_object.get_member(interaction.user.id).add_roles(
                     interaction.client.server_premium_role, reason="Abonnement automatique")
-                message_ = f"Votre abonement a bien été enregistré et est valable jusqu'au "\
+                message_ = f"Votre abonement a bien été enregistré et est valable jusqu'au " \
                            + \
                            discord.utils.format_dt(new_expire_at) + "."
                 await interaction.response.send_message(message_)
