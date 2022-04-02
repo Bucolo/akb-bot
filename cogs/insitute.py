@@ -1,5 +1,6 @@
 import datetime
 import pytz
+import asyncio
 
 import discord
 from discord.ext import commands, tasks
@@ -29,18 +30,19 @@ class Institute(commands.Cog):
 
     @tasks.loop(minutes=10)
     async def check_expiration_date(self):
+        await self.bot.wait_until_ready()
+        while self.bot.server_object is None:
+            await asyncio.sleep(3)
         data = await self.bot.pool.fetch("SELECT user_id,expire_at FROM subscribe")
         expired_transactions = []
         for r in data:
             if r["user_id"] is not None and r["expire_at"] is not None and r["expire_at"] <= datetime.datetime.utcnow().replace(tzinfo=pytz.UTC):
-                print("testaaaaaa")
-                member = self.bot.server_object.get_member(r["user_id"])
+                member = self.bot.server_object.get_member(int(r["user_id"]))
                 if member:
                     try:
                         await member.remove_roles(self.bot.server_premium_roles, reason="Expiration de l'abonnement")
                     except discord.HTTPException:
                         pass
                 expired_transactions.append((r["transaction"], r["user_id"]))
-        print("tooo")
         await self.bot.pool.executemany("DELETE FROM subscribe WHERE transaction=$1 AND user_id=$2",
                                         expired_transactions)
