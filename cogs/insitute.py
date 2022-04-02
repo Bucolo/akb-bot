@@ -30,7 +30,7 @@ class Institute(commands.Cog):
 
     @tasks.loop(minutes=10)
     async def check_expiration_date(self):
-        print("too")
+        await self.bot.wait_until_ready()
         while self.bot.server_object is None:
             await asyncio.sleep(3)
         data = await self.bot.pool.fetch("SELECT user_id,expire_at FROM subscribe")
@@ -41,7 +41,7 @@ class Institute(commands.Cog):
                 print("after member")
                 if member:
                     try:
-                        await member.remove_roles(self.bot.server_premium_roles, reason="Expiration de l'abonnement")
+                        await member.remove_roles(self.bot.server_premium_role, reason="Expiration de l'abonnement")
                     except discord.HTTPException:
                         pass
                 expired_transactions.append((r["transaction"], r["user_id"]))
@@ -49,8 +49,4 @@ class Institute(commands.Cog):
         await self.bot.pool.executemany("DELETE FROM subscribe WHERE transaction=$1 AND user_id=$2",
                                         expired_transactions)
 
-    @check_expiration_date.before_loop
-    async def before_check(self):
-        print("before")
-        await self.bot.wait_until_ready()
 
