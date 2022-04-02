@@ -25,10 +25,6 @@ class SubscribeModal(BaseModal):
 
     async def on_submit(self, interaction) -> None:
         cleaned_transaction_id = self.transaction_id.value.replace(" ", "")
-        member = discord.utils.get(interaction.client.server_object.members, id=interaction.user.id)
-        if not member:
-            return await interaction.response.send_message(
-                f"Vous n'êtes pas dans le serveur, merci de rejoindre {self.server_invite} avant de vous inscrire.")
         await interaction.client.pool.execute(
             "INSERT INTO Registered_user(id,name) VALUES($1,$2) ON CONFLICT(id) DO UPDATE SET name=$2",
             interaction.user.id, str(interaction.user.name))
@@ -54,7 +50,7 @@ class SubscribeModal(BaseModal):
                                                           interaction.user.id, new_expire_at, claimed_at)
                 else:
                     new_expire_at = results["expire_at"]
-                await member.add_roles(
+                await interaction.user.add_roles(
                     interaction.client.server_premium_role, reason="Abonnement automatique")
                 message_ = f"Votre abonement a bien été enregistré et est valable jusqu'au " \
                            + \
@@ -95,9 +91,7 @@ class RegisterModal(BaseModal):
         if user_id:
             member = discord.utils.get(interaction.client.server_object.members, id=user_id)
             if not member:
-                await interaction.client.send_safe_dm(interaction.client.get_user(user_id),
-                                                      f"Votre demande d'abonnement a été approuvé mais vous n'etes plus dans le serveur, merci de rejoindre {interaction.client.server_invite} avant de réutiliser `/subscribe`.")
-
+                await interaction.client.pool.execute("UPDATE subscribe SET user_id=$1,claimed_at=$1", None)
             else:
                 await member.add_roles(interaction.client.server_premium_role, reason="Abonnement automatique")
                 await interaction.client.send_safe_dm(member,

@@ -23,6 +23,7 @@ class Institute(commands.Cog):
         self.check_expiration_date.start()
 
     @app_commands.command(name="subscribe")
+    @app_commands.guilds(957989755184881764)
     async def subscribe_(self, interaction):
         await interaction.response.send_modal(SubscribeModal())
 
