@@ -30,6 +30,7 @@ class Institute(commands.Cog):
 
     @tasks.loop(minutes=10)
     async def check_expiration_date(self):
+        print("too")
         while self.bot.server_object is None:
             await asyncio.sleep(3)
         data = await self.bot.pool.fetch("SELECT user_id,expire_at FROM subscribe")
@@ -37,6 +38,7 @@ class Institute(commands.Cog):
         for r in data:
             if r["user_id"] is not None and r["expire_at"] is not None and r["expire_at"] <= datetime.datetime.utcnow().replace(tzinfo=pytz.UTC):
                 member = self.bot.server_object.get_member(int(r["user_id"]))
+                print("after member")
                 if member:
                     try:
                         await member.remove_roles(self.bot.server_premium_roles, reason="Expiration de l'abonnement")
@@ -49,5 +51,6 @@ class Institute(commands.Cog):
 
     @check_expiration_date.before_loop()
     async def before_check(self):
+        print("before")
         await self.bot.wait_until_ready()
 
