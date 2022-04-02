@@ -15,6 +15,7 @@ class Institute(commands.Cog):
     async def subscribe_(self, interaction):
         await interaction.response.send_modal(SubscribeModal())
 
+    @app_commands.checks.has_permissions(manage_roles=True)
     @app_commands.command(name="register")
     async def register_(self, interaction):
         await interaction.response.send_modal(RegisterModal())
