@@ -12,7 +12,7 @@ class BaseModal(discord.ui.Modal):
         await interaction.client.tree.on_error(interaction, interaction.command, error)
 
 
-class TransactionModal(BaseModal):
+class SubscribeModal(BaseModal):
     transaction_id = discord.ui.TextInput(
         label="Numéro De Transaction",
         min_length=5,
@@ -62,7 +62,7 @@ class TransactionModal(BaseModal):
                 await interaction.response.send_message(message_)
 
 
-class TransactionModal(BaseModal):
+class RegisterModal(BaseModal):
     transaction_id = discord.ui.TextInput(
         label="Numéro De Transaction",
         min_length=5,
