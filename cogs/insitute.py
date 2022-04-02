@@ -1,5 +1,6 @@
 import datetime
 
+import discord
 from discord.ext import commands, tasks
 from discord import app_commands
 from utils.modals import SubscribeModal, RegisterModal
@@ -33,7 +34,10 @@ class Institute(commands.Cog):
             if r["user_id"] is not None and r["expire_at"] is not None and r["expire_at"] <= datetime.datetime.utcnow():
                 member = self.bot.server_object.get_member(r["user_id"])
                 if member:
-                    await member.remove_roles(self.bot.server_premium_roles, reason="Expiration de l'abonnement")
+                    try:
+                        await member.remove_roles(self.bot.server_premium_roles, reason="Expiration de l'abonnement")
+                    except discord.HTTPException:
+                        pass
                 expired_transactions.append((r["transaction"], r["user_id"]))
         await self.bot.pool.executemany("DELETE FROM subscribe WHERE transaction=$1 AND user_id=$2",
                                         expired_transactions)
