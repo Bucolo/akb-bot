@@ -44,5 +44,6 @@ class Institute(commands.Cog):
                     except discord.HTTPException:
                         pass
                 expired_transactions.append((r["transaction"], r["user_id"]))
+        print(len(expired_transactions))
         await self.bot.pool.executemany("DELETE FROM subscribe WHERE transaction=$1 AND user_id=$2",
                                         expired_transactions)
