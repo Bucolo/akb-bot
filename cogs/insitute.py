@@ -31,7 +31,7 @@ class Institute(commands.Cog):
     async def register_(self, interaction):
         await interaction.response.send_modal(RegisterModal())
 
-    @tasks.loop(seconds=10)
+    @tasks.loop(minutes=30)
     async def check_expiration_date(self):
         if self.first:
             self.first = False
