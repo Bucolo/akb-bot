@@ -17,7 +17,7 @@ class SubscribeModal(BaseModal):
         label="Numéro De Transaction",
         min_length=5,
         max_length=50,
-        placeholder="vous pouvez le trouver dans les detail de la transaction sur PayPal",
+        placeholder="Accessible depuis les details de la transaction sur PayPal",
     )
 
     def __init__(self, **kwargs):
