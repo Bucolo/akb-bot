@@ -59,7 +59,7 @@ class SubscribeModal(BaseModal):
                 message_ = f"Votre abonement a bien été enregistré et est valable jusqu'au " \
                            + \
                            discord.utils.format_dt(new_expire_at) + "."
-                await interaction.response.send_message(message_)
+                await interaction.response.send_message(message_, ephemeral=True)
 
 
 class RegisterModal(BaseModal):
