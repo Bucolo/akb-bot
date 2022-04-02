@@ -8,6 +8,8 @@ from discord import app_commands
 from utils.modals import SubscribeModal, RegisterModal
 
 
+
+
 async def setup(bot):
     await bot.add_cog(Institute(bot))
 
@@ -15,6 +17,7 @@ async def setup(bot):
 class Institute(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.first = True
 
     async def cog_load(self) -> None:
         self.check_expiration_date.start()
@@ -28,17 +31,16 @@ class Institute(commands.Cog):
     async def register_(self, interaction):
         await interaction.response.send_modal(RegisterModal())
 
-    @tasks.loop(minutes=10)
+    @tasks.loop(seconds=10)
     async def check_expiration_date(self):
-        await self.bot.wait_until_ready()
-        while self.bot.server_object is None:
-            await asyncio.sleep(3)
-        data = await self.bot.pool.fetch("SELECT user_id,expire_at FROM subscribe")
+        if self.first:
+            self.first = False
+            return
+        data = await self.bot.pool.fetch("SELECT transaction,user_id,expire_at FROM subscribe")
         expired_transactions = []
         for r in data:
             if r["user_id"] is not None and r["expire_at"] is not None and r["expire_at"] <= datetime.datetime.utcnow().replace(tzinfo=pytz.UTC):
                 member = self.bot.server_object.get_member(int(r["user_id"]))
-                print("after member")
                 if member:
                     try:
                         await member.remove_roles(self.bot.server_premium_role, reason="Expiration de l'abonnement")
@@ -48,5 +50,3 @@ class Institute(commands.Cog):
         print(len(expired_transactions))
         await self.bot.pool.executemany("DELETE FROM subscribe WHERE transaction=$1 AND user_id=$2",
                                         expired_transactions)
-
-
