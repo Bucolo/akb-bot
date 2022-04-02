@@ -33,6 +33,7 @@ class Institute(commands.Cog):
         expired_transactions = []
         for r in data:
             if r["user_id"] is not None and r["expire_at"] is not None and r["expire_at"] <= datetime.datetime.utcnow().replace(tzinfo=pytz.UTC):
+                print("testaaaaaa")
                 member = self.bot.server_object.get_member(r["user_id"])
                 if member:
                     try:
@@ -40,5 +41,6 @@ class Institute(commands.Cog):
                     except discord.HTTPException:
                         pass
                 expired_transactions.append((r["transaction"], r["user_id"]))
+        print("tooo")
         await self.bot.pool.executemany("DELETE FROM subscribe WHERE transaction=$1 AND user_id=$2",
                                         expired_transactions)
