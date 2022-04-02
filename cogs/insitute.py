@@ -49,7 +49,7 @@ class Institute(commands.Cog):
         await self.bot.pool.executemany("DELETE FROM subscribe WHERE transaction=$1 AND user_id=$2",
                                         expired_transactions)
 
-    @check_expiration_date.before_loop()
+    @check_expiration_date.before_loop
     async def before_check(self):
         print("before")
         await self.bot.wait_until_ready()
