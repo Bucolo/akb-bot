@@ -22,13 +22,13 @@ class CustomCommandTree(app_commands.CommandTree):
 
         if isinstance(error, app_commands.errors.CommandNotFound):
             embed.title = "🛑 Commande Introuvable"
-            embed.description = "Desolé, cette command n'existe plus."
+            embed.description = "Desolé, cette commande n'existe plus."
             await interaction.client.send_interaction_error_message(interaction, embed=embed)
         elif isinstance(error, app_commands.CheckFailure):
             if isinstance(error, app_commands.BotMissingPermissions):
                 missing = [(e.replace('_', ' ').replace('guild', 'server')).title() for e in error.missing_permissions]
                 perms_formatted = "**, **".join(missing[:-2] + ["** et **".join(missing[-2:])])
-                _message = f"J'ai besoin des permissions **{perms_formatted}** pour procéder a cette commande."
+                _message = f"J'ai besoin des permissions **{perms_formatted}** pour procéder à cette commande."
                 embed.title = "❌ Il Me Manque Des Permissions"
                 embed.description = _message
                 await interaction.client.send_interaction_error_message(interaction, embed=embed)
@@ -42,14 +42,14 @@ class CustomCommandTree(app_commands.CommandTree):
             elif isinstance(error, app_commands.MissingPermissions):
                 missing = [(e.replace('_', ' ').replace('guild', 'server')).title() for e in error.missing_permissions]
                 perms_formatted = "**, **".join(missing[:-2] + ["** et **".join(missing[-2:])])
-                _message = f"Tu a besoin des permissions **{perms_formatted}** pour utiliser cette commande."
-                embed.title = "🛑 Il Te Manque Des Permissions"
+                _message = f"Tu as besoin des permissions **{perms_formatted}** pour utiliser cette commande."
+                embed.title = "🛑 Il Te Manques Des Permissions"
                 embed.description = _message
                 await interaction.client.send_interaction_error_message(interaction, embed=embed)
 
             elif isinstance(error, app_commands.MissingRole):
                 missing = error.missing_role
-                _message = f"Tu a besoin du role **{missing}** pour utiliser cette commande."
+                _message = f"Tu as besoin du role **{missing}** pour utiliser cette commande."
                 embed.title = "🛑 Il Te Manque Un Role"
                 embed.description = _message
                 await interaction.client.send_interaction_error_message(interaction, embed=embed)
@@ -58,7 +58,7 @@ class CustomCommandTree(app_commands.CommandTree):
                 return
 
             elif isinstance(error, exceptions.NotOwner):
-                _message = f"Désole **{interaction.user}**, Mais cette commande est réserve a mon développeur."
+                _message = f"Désolé **{interaction.user}**, Mais cette commande est réservée a mon développeur."
                 embed.title = "🛑 Seulement Pour Mon Developpeur"
                 embed.description = _message
                 await interaction.client.send_interaction_error_message(interaction, embed=embed)

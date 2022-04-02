@@ -4,7 +4,8 @@ import datetime
 import dateparser
 
 NOT_APPROVED = "Votre numéro de transaction n'a pas encore été ajouté dans la base de donnée, votre inscription est " \
-               "donc pour l'instant en attente. je vous contacterai quand elle aura eté validé. "
+               "donc pour l'instant en attente. je vous contacterai quand elle aura eté validée, (merci de ne pas " \
+               "quitter le serveur). "
 
 
 class BaseModal(discord.ui.Modal):
@@ -17,7 +18,7 @@ class SubscribeModal(BaseModal):
         label="Numéro De Transaction",
         min_length=5,
         max_length=50,
-        placeholder="Accessible depuis les details de la transaction sur PayPal",
+        placeholder="Accessible depuis les détails de la transaction sur PayPal",
     )
 
     def __init__(self, **kwargs):
@@ -38,8 +39,8 @@ class SubscribeModal(BaseModal):
             results = await interaction.client.pool.fetchrow(
                 "SELECT * FROM subscribe WHERE transaction=$1", cleaned_transaction_id)
             if results["user_id"] is not None and int(results["user_id"]) != interaction.user.id:
-                await interaction.response.send_message("Un abonement a deja été enregistré avec ce numéro de "
-                                                        "transaction, votre demande a donc été annulé.", ephemeral=True)
+                await interaction.response.send_message("Un abonnement a deja été enregistré avec ce numéro de "
+                                                        "transaction, votre demande a donc été annulée.", ephemeral=True)
             else:
                 if not results["approved"] or results["expire_at"] is None:
                     return await interaction.response.send_message(NOT_APPROVED, ephemeral=True)
@@ -52,7 +53,7 @@ class SubscribeModal(BaseModal):
                     new_expire_at = results["expire_at"]
                 await interaction.user.add_roles(
                     interaction.client.server_premium_role, reason="Abonnement automatique")
-                message_ = f"Votre abonement a bien été enregistré et est valable jusqu'au " \
+                message_ = f"Votre abonnement a bien été enregistré et est valable jusqu'au " \
                            + \
                            discord.utils.format_dt(new_expire_at) + "."
                 await interaction.response.send_message(message_, ephemeral=True)
@@ -66,10 +67,10 @@ class RegisterModal(BaseModal):
         placeholder="32435275Z397962A",
     )
     expire_at = discord.ui.TextInput(
-        label="Durée de l'abonement / date d'expiration",
+        label="Durée de l'abonnement ou date d'éxpiration",
         min_length=1,
         max_length=50,
-        placeholder="1 semaine / 10 avril 2022",
+        placeholder="'1 semaine' ou '10 avril 2022'",
     )
 
     def __init__(self, **kwargs):
@@ -83,7 +84,7 @@ class RegisterModal(BaseModal):
                       'PREFER_DATES_FROM': 'future'},
         )
         if expire_at is None:
-            return await interaction.response.send_message("Je n'ai pas pu comprendre la date d'expiration, merci de "
+            return await interaction.response.send_message("Je n'ai pas pu comprendre la date d'éxpiration, merci de "
                                                            "réessayer avec une autre valeur")
         user_id = await interaction.client.pool.fetchval(
             "INSERT INTO subscribe(transaction,approved,expire_at,registered_at) VALUES ($1,$2,$3,$4) ON CONFLICT(transaction) DO UPDATE SET approved=$2,expire_at=$3,claimed_at=$4 RETURNING user_id",
@@ -96,4 +97,4 @@ class RegisterModal(BaseModal):
                 await member.add_roles(interaction.client.server_premium_role, reason="Abonnement automatique")
                 await interaction.client.send_safe_dm(member,
                                                       f"Votre abonnement a été approuvé, vous pouvez donc bénéficier de celui-ci jusqu'au {discord.utils.format_dt(expire_at)}.")
-        await interaction.response.send_message("L'abonnement a été enregistré avec success !", ephemeral=True)
+        await interaction.response.send_message("L'abonnement a été enregistré avec succès !", ephemeral=True)

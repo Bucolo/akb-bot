@@ -8,8 +8,6 @@ from discord import app_commands
 from utils.modals import SubscribeModal, RegisterModal
 
 
-
-
 async def setup(bot):
     await bot.add_cog(Institute(bot))
 
@@ -22,13 +20,14 @@ class Institute(commands.Cog):
     async def cog_load(self) -> None:
         self.check_expiration_date.start()
 
-    @app_commands.command(name="subscribe")
+    @app_commands.command(name="subscribe", description="Cette commande te permet de procéder à ton inscription.")
     @app_commands.guilds(957989755184881764)
-    async def subscribe_(self, interaction):
+    async def subspicribe_(self, interaction):
         await interaction.response.send_modal(SubscribeModal())
 
     @app_commands.checks.has_permissions(manage_roles=True)
-    @app_commands.command(name="register")
+    @app_commands.command(name="register", description="Cette commande permet d'ajouter un nouveau numéro de "
+                                                       "transaction dans la base de donnée.")
     async def register_(self, interaction):
         await interaction.response.send_modal(RegisterModal())
 
@@ -44,7 +43,7 @@ class Institute(commands.Cog):
                 member = self.bot.server_object.get_member(int(r["user_id"]))
                 if member:
                     try:
-                        await member.remove_roles(self.bot.server_premium_role, reason="Expiration de l'abonnement")
+                        await member.remove_roles(self.bot.server_premium_role, reason="Éxpiration de l'abonnement")
                     except discord.HTTPException:
                         pass
                 expired_transactions.append((r["transaction"], r["user_id"]))
