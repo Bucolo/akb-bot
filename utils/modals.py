@@ -90,7 +90,7 @@ class RegisterModal(BaseModal):
             return await interaction.response.send_message("Je n'ai pas pu comprendre la date d'expiration, merci de "
                                                            "réessayer avec une autre valeur")
         user_id = await interaction.client.pool.fetchval(
-            "INSERT INTO subscribe(transaction,approved,expire_at,registered_at) VALUES ($1,$2,$3,$4) ON CONFLICT(transaction) DO UPDATE SET approved=$2,expire_at=$3 RETURNING user_id",
+            "INSERT INTO subscribe(transaction,approved,expire_at,registered_at) VALUES ($1,$2,$3,$4) ON CONFLICT(transaction) DO UPDATE SET approved=$2,expire_at=$3,claimed_at=$4 RETURNING user_id",
             cleaned_transaction_id, True, expire_at, datetime.datetime.utcnow())
         if user_id:
             member = discord.utils.get(interaction.client.server_object.members, id=user_id)
