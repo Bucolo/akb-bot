@@ -1,6 +1,6 @@
 from discord.ext import commands
 from discord import app_commands
-from utils.modals import TransactionModal
+from utils.modals import TransactionModal, RegisterModal
 
 
 async def setup(bot):
@@ -14,3 +14,7 @@ class Institute(commands.Cog):
     @app_commands.command(name="subscribe")
     async def subscribe_(self, interaction):
         await interaction.response.send_modal(TransactionModal())
+
+    @app_commands.command(name="register")
+    async def register_(self, interaction):
+        await interaction.response.send_modal(RegisterModal())

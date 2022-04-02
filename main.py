@@ -58,6 +58,13 @@ class AkbBot(commands.Bot):
         self.default_checks = {self.check_blacklisted}
 
     @staticmethod
+    async def send_safe_dm(user, *args, **kwargs):
+        try:
+            await user.send(*args, **kwargs)
+        except discord.Forbidden:
+            pass
+
+    @staticmethod
     async def check_blacklisted(interaction):
         if not hasattr(interaction.client, "pool"):
             return True
@@ -69,11 +76,12 @@ class AkbBot(commands.Bot):
     async def is_blacklisted(self, user):
         return await self.pool.fetchval("SELECT reason FROM registered_user WHERE id=$1 AND is_blacklisted", user.id)
 
-    async def before_ready_once(self) -> None:
+    async def setup_hook(self) -> None:
         self.pool = await self.establish_database_connection()
         ssl_context = ssl.create_default_context(cafile=certifi.where())
         connector = aiohttp.TCPConnector(ssl=ssl_context)
         self.session = aiohttp.ClientSession(connector=connector)
+        await self.load_cogs()
         self.loop.create_task(self.on_ready_once())
 
     async def on_ready_once(self):
@@ -215,8 +223,7 @@ if __name__ == "__main__":
     async def main():
         bot = AkbBot()
         async with bot:
-            await bot.before_ready_once()
-            await bot.load_cogs()
             await bot.start(TOKEN)
+
 
     asyncio.run(main())
