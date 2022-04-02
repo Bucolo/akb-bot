@@ -102,4 +102,4 @@ class TransactionModal(BaseModal):
                 await member.add_roles(interaction.client.server_premium_role, reason="Abonnement automatique")
                 await interaction.client.send_safe_dm(member,
                                                       f"Votre abonnement a été approuvé, vous pouvez donc bénéficier de celui-ci jusqu'au {discord.utils.format_dt(expire_at)}.")
-        await interaction.response.send_message("L'abonement a été enregistré avec success !", ephemeral=True)
+        await interaction.response.send_message("L'abonnement a été enregistré avec success !", ephemeral=True)
