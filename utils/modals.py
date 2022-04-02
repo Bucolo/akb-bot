@@ -82,7 +82,7 @@ class RegisterModal(BaseModal):
     async def on_submit(self, interaction) -> None:
         cleaned_transaction_id = self.transaction_id.value.replace(" ", "")
         expire_at = dateparser.parse(
-            self.expire_at,
+            self.expire_at.value,
             settings={'TO_TIMEZONE': 'UTC', 'TIMEZONE': 'Europe/Paris', 'RETURN_AS_TIMEZONE_AWARE': True,
                       'PREFER_DATES_FROM': 'future'},
         )
