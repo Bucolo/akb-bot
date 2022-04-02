@@ -30,7 +30,6 @@ class Institute(commands.Cog):
 
     @tasks.loop(minutes=10)
     async def check_expiration_date(self):
-        await self.bot.wait_until_ready()
         while self.bot.server_object is None:
             await asyncio.sleep(3)
         data = await self.bot.pool.fetch("SELECT user_id,expire_at FROM subscribe")
@@ -47,3 +46,8 @@ class Institute(commands.Cog):
         print(len(expired_transactions))
         await self.bot.pool.executemany("DELETE FROM subscribe WHERE transaction=$1 AND user_id=$2",
                                         expired_transactions)
+
+    @check_expiration_date.before_loop()
+    async def before_check(self):
+        await self.bot.wait_until_ready()
+
