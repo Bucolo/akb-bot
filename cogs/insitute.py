@@ -61,6 +61,11 @@ class Institute(commands.Cog):
             *query_args)
         if not info:
             return await interaction.response.send_message("Aucun abonnement n'a eté supprimer", ephemeral=True)
+        for row in info:
+            member = self.bot.server_object.get_member(row["user_id"])
+            if member:
+                await member.remove_roles(self.bot.server_premium_role,
+                                          reason=f"Annulation de l'abonnement par {str(interaction.user)}")
         string = "\n".join([f"""{', '.join('`' + [i["name"] + '`', '`' + i["transaction"] + '`'])}""" for i in info])
         await interaction.response.send_message(f"J'ai supprimer les abonnements suivant : {string}", ephemeral=True)
 
