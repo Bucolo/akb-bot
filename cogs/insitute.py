@@ -77,8 +77,7 @@ class Institute(commands.Cog):
         data = await self.bot.pool.fetch("SELECT transaction,user_id,expire_at FROM subscribe")
         expired_transactions = []
         for r in data:
-            if r["user_id"] is not None and r["expire_at"] is not None and r[
-                "expire_at"] <= datetime.datetime.utcnow().replace(tzinfo=pytz.UTC):
+            if r["user_id"] is not None and r["expire_at"] is not None and r["expire_at"] <= datetime.datetime.utcnow().replace(tzinfo=pytz.UTC):
                 member = self.bot.server_object.get_member(int(r["user_id"]))
                 if member:
                     try:
