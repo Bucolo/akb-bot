@@ -57,7 +57,7 @@ class Institute(commands.Cog):
         query = f' {operation} '.join(query_list)
         query_args = tuple(query_args)
         info = await interaction.client.pool.fetch(
-            f"DELETE FROM subscribe USING registered_user WHERE {query} RETURNING  *",
+            f"DELETE FROM subscribe WHERE {query} RETURNING  *",
             *query_args)
         if not info:
             return await interaction.response.send_message("Aucun abonnement n'a eté supprimer", ephemeral=True)
@@ -66,7 +66,7 @@ class Institute(commands.Cog):
             if member:
                 await member.remove_roles(self.bot.server_premium_role,
                                           reason=f"Annulation de l'abonnement par {str(interaction.user)}")
-        string = "\n".join([f"""{', '.join(['`' + i["name"] + '`', '`' + i["transaction"] + '`'])}""" for i in info])
+        string = "\n".join([f"""{', '.join(['`' + interaction.client.get_user(i["user_id"]) + '`', '`' + i["transaction"] + '`'])}""" for i in info])
         await interaction.response.send_message(f"J'ai supprimer les abonnements suivant : {string}", ephemeral=True)
 
     @tasks.loop(minutes=30)
