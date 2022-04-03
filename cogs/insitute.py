@@ -66,7 +66,7 @@ class Institute(commands.Cog):
             if member:
                 await member.remove_roles(self.bot.server_premium_role,
                                           reason=f"Annulation de l'abonnement par {str(interaction.user)}")
-        string = "\n".join([f"""{', '.join(['`' + interaction.client.get_user(i["user_id"]) + '`', '`' + i["transaction"] + '`'])}""" for i in info])
+        string = "\n".join([f"""{', '.join(['`' + str(interaction.client.get_user(i["user_id"])) + '`', '`' + i["transaction"] + '`'])}""" for i in info])
         await interaction.response.send_message(f"J'ai supprimer les abonnements suivant : {string}", ephemeral=True)
 
     @tasks.loop(minutes=30)
