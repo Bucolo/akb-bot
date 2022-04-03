@@ -45,7 +45,7 @@ class Institute(commands.Cog):
                         ):
         if not user and not transaction:
             return await interaction.response.send_message("Au moins un des deux argument est nécessaire")
-        filters = dict(transaction=transaction, user_id=user.id)
+        filters = dict(transaction=transaction, user_id=user.id if user else None)
         query_list = []
         query_args = []
         c = 1
