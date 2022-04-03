@@ -57,7 +57,7 @@ class Institute(commands.Cog):
         query = f' {operation} '.join(query_list)
         query_args = tuple(query_args)
         info = await interaction.client.pool.fetch(
-            f"DELETE subscribe FROM subscribe LEFT JOIN registered_user ON subscribe.user_id=registered_user.id WHERE {query} RETURNING  *",
+            f"DELETE FROM subscribe USING registered_user WHERE {query} RETURNING  *",
             *query_args)
         if not info:
             return await interaction.response.send_message("Aucun abonnement n'a eté supprimer", ephemeral=True)
