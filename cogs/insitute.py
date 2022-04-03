@@ -36,7 +36,7 @@ class Institute(commands.Cog):
                           description="Permet l'annulation d'abonnement(s) par utilisateur ou par numéro de transaction.")
     @app_commands.rename(user='utilisateur')
     @app_commands.describe(
-        operation="Si l'abonnement suprimé doit verifier les 2 informations (AND)(par défaut) ou seulement une des 2 (OR)")
+        operation="Si l'abonnement doit verifier les 2 informations (AND)(par défaut) ou seulement une des 2 (OR)")
     async def terminate(self,
                         interaction,
                         transaction: str = None,
