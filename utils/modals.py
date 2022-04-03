@@ -4,7 +4,7 @@ import datetime
 import dateparser
 
 NOT_APPROVED = "Votre numéro de transaction n'a pas encore été ajouté dans la base de donnée, votre inscription est " \
-               "donc pour l'instant en attente. je vous contacterai quand elle aura eté validée, (merci de ne pas " \
+               "donc pour l'instant en attente. Le bot vous contactera quand elle aura eté validée (merci de ne pas " \
                "quitter le serveur). "
 
 
